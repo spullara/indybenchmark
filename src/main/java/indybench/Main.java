@@ -32,7 +32,7 @@ public class Main {
   private static Boolean indy = false;
 
   @Argument(description = "Enable the invokedynamic with no guard benchmark")
-  private static Boolean indyNoGaurd = false;
+  private static Boolean indyNoGuards = false;
 
   @Argument(description = "Enable the invokedynamic object handler benchmark")
   private static Boolean indyOH = false;
@@ -63,7 +63,7 @@ public class Main {
   
   public static void main(String[] args) throws Throwable {
     Args.parseOrExit(Main.class, args);
-    if (!all && !reflectionOH && !codegenReflectionOH && !indy && !indyNoGaurd && !reflection &&
+    if (!all && !reflectionOH && !codegenReflectionOH && !indy && !indyNoGuards && !reflection &&
             !cachedReflection && !unreflection && !cachedUnreflection && !mh && !cachedMH && !direct) {
       System.err.println("You must select at least 1 benchmark");
       Args.usage(Main.class);
@@ -74,7 +74,7 @@ public class Main {
       if (all || reflectionOH) timeReflectionOH(indyDemo);
       if (all || codegenReflectionOH) timeCodegenReflectionOH(indyDemo);
       if (all || indy) timeIndy(indyDemo);
-      if (all || indyNoGaurd) timeIndyNoGuard(indyDemo);
+      if (all || indyNoGuards) timeIndyNoGuard(indyDemo);
       if (all || indyOH) timeIndyOH(indyDemo);
       if (all || reflection) timeReflection(indyDemo);
       if (all || cachedReflection) timeReflectionCached(indyDemo);
