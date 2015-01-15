@@ -58,6 +58,9 @@ public class Main {
   @Argument(description = "Enable the direct method call benchmark")
   private static Boolean direct = false;
 
+  @Argument(description = "Use a method handle in a static final field")
+  private static Boolean constantMH = false;
+  
   @Argument(description = "Enable all benchmarks")
   private static Boolean all = false;
   
@@ -83,6 +86,7 @@ public class Main {
       if (all || mh) timeMH(indyDemo);
       if (all || cachedMH) timeMHCached(indyDemo);
       if (all || direct) timeDirect(indyDemo);
+      if (all || constantMH) timeMHConstant(indyDemo);
       System.out.println("-----------------");
     }
   }
@@ -191,6 +195,25 @@ public class Main {
       int result = (int) someMethod.invokeExact(indyDemo);
     }
     System.out.println("methodhandle cached: " + (System.currentTimeMillis() - start));
+  }
+
+  private final static MethodHandle someMethod;
+  static {
+    MethodHandles.Lookup lookup = MethodHandles.lookup();
+    MethodType type = MethodType.methodType(Integer.TYPE);
+    try {
+      someMethod = lookup.findVirtual(Main.class, "someMethod", type);
+    } catch (NoSuchMethodException | IllegalAccessException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  public static void timeMHConstant(Main indyDemo) throws Throwable {
+    long start = System.currentTimeMillis();
+    for (int i = 0; i < times; i++) {
+      int result = (int) someMethod.invokeExact(indyDemo);
+    }
+    System.out.println("methodhandle constant: " + (System.currentTimeMillis() - start));
   }
 
   public static void timeDirect(Main indyDemo) throws Throwable {
